@@ -6,6 +6,8 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Collider))]
 public class Agent : MonoBehaviour
 {
+    [SerializeField] private int damageOnContact;
+
     private NavMeshAgent navMeshAgent;
 
     private void Awake()
@@ -37,6 +39,10 @@ public class Agent : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log(other.name);
+        if (other.TryGetComponent(out IDamagable damagable))
+        {
+            Debug.Log(other.name);
+            damagable.DealDamage(damageOnContact);
+        }
     }
 }
