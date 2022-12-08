@@ -214,7 +214,7 @@ GameObject:
   - component: {fileID: 293561521}
   - component: {fileID: 293561520}
   - component: {fileID: 293561519}
-  m_Layer: 0
+  m_Layer: 6
   m_Name: Arena
   m_TagString: Untagged
   m_Icon: {fileID: 0}
