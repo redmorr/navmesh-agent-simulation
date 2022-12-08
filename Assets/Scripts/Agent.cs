@@ -41,7 +41,6 @@ public class Agent : MonoBehaviour
     {
         if (other.TryGetComponent(out IDamagable damagable))
         {
-            Debug.Log(other.name);
             damagable.DealDamage(damageOnContact);
         }
     }

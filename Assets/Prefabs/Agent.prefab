@@ -16,7 +16,8 @@ GameObject:
   - component: {fileID: 1883438421628031127}
   - component: {fileID: 1883438421628031121}
   - component: {fileID: 1883438421628031124}
-  m_Layer: 0
+  - component: {fileID: -9174796826107418863}
+  m_Layer: 3
   m_Name: Agent
   m_TagString: Untagged
   m_Icon: {fileID: 0}
@@ -66,7 +67,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 2100000, guid: 31321ba15b8f8eb4c954353edc038b1d, type: 2}
+  - {fileID: 2100000, guid: fc68d0622c2554b4a90490ffd6831ba7, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -166,3 +167,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   healthPoints: 3
+--- !u!114 &-9174796826107418863
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883438421628031132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f21c4ba79eb3f0949b499dfc3251fa3d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  selectionMaterial: {fileID: 2100000, guid: 0bc9b5c3ae8d1234e8efdf2fe1e6cdb2, type: 2}
