@@ -1,18 +1,32 @@
 using UnityEngine;
 using UnityEngine.AI;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
-public class Agent : MonoBehaviour
+[RequireComponent(typeof(MeshRenderer))]
+public class Agent : MonoBehaviour, IDamagable
 {
+    [SerializeField] private string agentName;
+    [SerializeField] private int healthPoints;
     [SerializeField] private int damageOnContact;
+    [SerializeField] private Material selectionMaterial;
 
     private NavMeshAgent navMeshAgent;
+    private MeshRenderer mesh;
+    private Material originalMaterial;
+
+    public UnityAction<int> OnHealthChanged;
+
+    public string Name { get => agentName; private set => agentName = value; }
+    public int HealthPoints { get => healthPoints; private set => healthPoints = value; }
 
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        mesh = GetComponent<MeshRenderer>();
+        originalMaterial = mesh.material;
     }
 
     private void Update()
@@ -37,11 +51,27 @@ public class Agent : MonoBehaviour
         return center;
     }
 
+    public void ApplyDamage(int amount)
+    {
+        healthPoints -= amount;
+        OnHealthChanged?.Invoke(healthPoints);
+    }
+
+    public void HighlightSelected()
+    {
+        mesh.material = selectionMaterial;
+    }
+
+    public void ResetHighlight()
+    {
+        mesh.material = originalMaterial;
+    }
+
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out IDamagable damagable))
+        if (other.TryGetComponent(out Agent damagable))
         {
-            damagable.DealDamage(damageOnContact);
+            damagable.ApplyDamage(damageOnContact);
         }
     }
 }

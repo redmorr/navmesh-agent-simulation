@@ -15,8 +15,6 @@ GameObject:
   - component: {fileID: 1883438421628031126}
   - component: {fileID: 1883438421628031127}
   - component: {fileID: 1883438421628031121}
-  - component: {fileID: 1883438421628031124}
-  - component: {fileID: -9174796826107418863}
   m_Layer: 3
   m_Name: Agent
   m_TagString: Untagged
@@ -153,30 +151,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 2ca2baed80ceece46b35d80ce613b572, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageOnContact: 1
---- !u!114 &1883438421628031124
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883438421628031132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ef6eb51fca265fe468514689fec2a749, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  agentName: 
   healthPoints: 3
---- !u!114 &-9174796826107418863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1883438421628031132}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f21c4ba79eb3f0949b499dfc3251fa3d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
+  damageOnContact: 1
   selectionMaterial: {fileID: 2100000, guid: 0bc9b5c3ae8d1234e8efdf2fe1e6cdb2, type: 2}
