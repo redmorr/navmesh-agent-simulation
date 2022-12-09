@@ -9,7 +9,7 @@ using UnityEngine.Events;
 public class Agent : MonoBehaviour, IDamagable
 {
     [SerializeField] private string agentName;
-    [SerializeField] private int healthPoints;
+    [SerializeField] private int initialHealthPoints;
     [SerializeField] private int damageOnContact;
     [SerializeField] private Material selectionMaterial;
 
@@ -20,14 +20,27 @@ public class Agent : MonoBehaviour, IDamagable
     public UnityAction<int> OnHealthChanged;
     public UnityAction<Agent> OnDeath;
 
+    public delegate void OnDisableCallback(Agent Instance);
+    public OnDisableCallback Disable;
+
     public string Name { get => agentName; private set => agentName = value; }
-    public int HealthPoints { get => healthPoints; private set => healthPoints = value; }
+    public int HealthPoints { get; private set; }
 
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
         mesh = GetComponent<MeshRenderer>();
         originalMaterial = mesh.material;
+    }
+
+    private void OnEnable()
+    {
+        HealthPoints = initialHealthPoints;
+    }
+
+    private void OnDisable()
+    {
+        mesh.material = originalMaterial;
     }
 
     private void Update()
@@ -52,14 +65,14 @@ public class Agent : MonoBehaviour, IDamagable
         return center;
     }
 
-    public void ApplyDamage(int amount)
+    public void ReceiveDamage(int amount)
     {
-        healthPoints -= amount;
-        OnHealthChanged?.Invoke(healthPoints);
-        if (healthPoints <= 0)
+        HealthPoints -= amount;
+        OnHealthChanged?.Invoke(HealthPoints);
+        if (HealthPoints <= 0)
         {
             OnDeath?.Invoke(this);
-            Destroy(gameObject);
+            Disable?.Invoke(this);
         }
     }
 
@@ -77,7 +90,7 @@ public class Agent : MonoBehaviour, IDamagable
     {
         if (other.TryGetComponent(out Agent damagable))
         {
-            damagable.ApplyDamage(damageOnContact);
+            damagable.ReceiveDamage(damageOnContact);
         }
     }
 }

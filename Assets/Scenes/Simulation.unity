@@ -1267,11 +1267,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 34c56c3ddb9de1d4789f14fd538bd351, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  agentPrefab: {fileID: 1883438421628031132, guid: c61ff5736e94f924aafaaae5554c5ae3,
+  agentPrefab: {fileID: 1883438421628031121, guid: c61ff5736e94f924aafaaae5554c5ae3,
     type: 3}
-  activeAgents: []
-  agentLimit: 40
-  agentSpawnRateInSeconds: 0.1
+  agentPoolDefaultCapacity: 1000
+  agentPoolMaxCapacity: 10000
+  agentLimit: 100
+  agentSpawnDelayInSeconds: 0.1
 --- !u!4 &1340064101
 Transform:
   m_ObjectHideFlags: 0
@@ -1326,8 +1327,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 319.8837, y: 0}
-  m_SizeDelta: {x: 309.8837, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1361602099
 MonoBehaviour:
