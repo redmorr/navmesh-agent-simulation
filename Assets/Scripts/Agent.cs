@@ -2,7 +2,6 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(NavMeshAgent))]
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -11,11 +10,9 @@ public class Agent : MonoBehaviour, IDamagable
     [SerializeField] private string agentName;
     [SerializeField] private int initialHealthPoints;
     [SerializeField] private int damageOnContact;
-    [SerializeField] private Material selectionMaterial;
 
     private NavMeshAgent navMeshAgent;
-    private MeshRenderer mesh;
-    private Material originalMaterial;
+    private int originalLayerID;
 
     public UnityAction<int> OnHealthChanged;
     public UnityAction<Agent> OnDeath;
@@ -29,18 +26,13 @@ public class Agent : MonoBehaviour, IDamagable
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
-        mesh = GetComponent<MeshRenderer>();
-        originalMaterial = mesh.material;
+        originalLayerID = gameObject.layer;
     }
 
     private void OnEnable()
     {
         HealthPoints = initialHealthPoints;
-    }
-
-    private void OnDisable()
-    {
-        mesh.material = originalMaterial;
+        gameObject.layer = originalLayerID;
     }
 
     private void Update()
@@ -74,16 +66,6 @@ public class Agent : MonoBehaviour, IDamagable
             OnDeath?.Invoke(this);
             Disable?.Invoke(this);
         }
-    }
-
-    public void HighlightSelected()
-    {
-        mesh.material = selectionMaterial;
-    }
-
-    public void ResetHighlight()
-    {
-        mesh.material = originalMaterial;
     }
 
     private void OnTriggerEnter(Collider other)

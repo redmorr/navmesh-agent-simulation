@@ -4,7 +4,8 @@ using UnityEngine.InputSystem;
 
 public class AgentSelectionManager : MonoBehaviour
 {
-    [SerializeField] private LayerMask selectableLayers;
+    [SerializeField] private LayerMask agentLayer;
+    [SerializeField] private LayerMask selectedAgentLayer;
 
     private PlayerControls inputActions;
     private Agent currentlySelectedAgent;
@@ -33,7 +34,7 @@ public class AgentSelectionManager : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(inputActions.Player.Mouse.ReadValue<Vector2>());
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, selectableLayers, QueryTriggerInteraction.Collide))
+        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, agentLayer, QueryTriggerInteraction.Collide))
         {
             if (hit.collider.TryGetComponent(out Agent agent))
             {
@@ -51,15 +52,20 @@ public class AgentSelectionManager : MonoBehaviour
 
     private void Select(Agent agent)
     {
-        agent.HighlightSelected();
         currentlySelectedAgent = agent;
+        currentlySelectedAgent.gameObject.layer = LayerMaskToInt(selectedAgentLayer);
         OnAgentSelected?.Invoke(currentlySelectedAgent);
     }
 
     private void Deselect()
     {
-        currentlySelectedAgent.ResetHighlight();
+        currentlySelectedAgent.gameObject.layer = LayerMaskToInt(agentLayer);
         OnAgentDeselected?.Invoke();
         currentlySelectedAgent = null;
+    }
+
+    private int LayerMaskToInt(LayerMask layerMask)
+    {
+        return (int)Mathf.Log(layerMask.value, 2);
     }
 }
