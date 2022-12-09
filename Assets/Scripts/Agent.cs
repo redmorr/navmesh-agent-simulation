@@ -18,6 +18,7 @@ public class Agent : MonoBehaviour, IDamagable
     private Material originalMaterial;
 
     public UnityAction<int> OnHealthChanged;
+    public UnityAction<Agent> OnDeath;
 
     public string Name { get => agentName; private set => agentName = value; }
     public int HealthPoints { get => healthPoints; private set => healthPoints = value; }
@@ -43,8 +44,8 @@ public class Agent : MonoBehaviour, IDamagable
     private Vector3 GetRandomPoint()
     {
         Vector3 center = Vector3.zero;
-        float width = 10f;
-        float depth = 10f;
+        float width = 20f;
+        float depth = 20f;
 
         center.x += Random.Range(-0.5f, 0.5f) * width;
         center.z += Random.Range(-0.5f, 0.5f) * depth;
@@ -55,6 +56,11 @@ public class Agent : MonoBehaviour, IDamagable
     {
         healthPoints -= amount;
         OnHealthChanged?.Invoke(healthPoints);
+        if (healthPoints <= 0)
+        {
+            OnDeath?.Invoke(this);
+            Destroy(gameObject);
+        }
     }
 
     public void HighlightSelected()

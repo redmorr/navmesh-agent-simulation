@@ -28,13 +28,21 @@ public class AgentDisplay : MonoBehaviour
         agentNameTextField.SetText(agent.Name);
         agentHealthPointsTextField.SetText(agent.HealthPoints.ToString());
         agent.OnHealthChanged += UpdateHealth;
+        agent.OnDeath += UnsubscribeFromAgent;
         ShowPanel();
     }
 
     private void DiscardAgent()
     {
         HidePanel();
+        UnsubscribeFromAgent(selectedAgent);
+    }
+
+    private void UnsubscribeFromAgent(Agent agent)
+    {
         selectedAgent.OnHealthChanged -= UpdateHealth;
+        selectedAgent.OnDeath -= UnsubscribeFromAgent;
+        HidePanel();
     }
 
     private void UpdateHealth(int newHealthPoints)
@@ -58,5 +66,7 @@ public class AgentDisplay : MonoBehaviour
     {
         agentSelection.OnAgentSelected -= UpdateAgent;
         agentSelection.OnAgentDeselected -= DiscardAgent;
+        if (selectedAgent)
+            selectedAgent.OnDeath -= UnsubscribeFromAgent;
     }
 }
