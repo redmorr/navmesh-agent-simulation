@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 
@@ -8,18 +9,17 @@ public class AgentDisplay : MonoBehaviour
     [SerializeField] private TextMeshProUGUI agentHealthPointsTextField;
 
     private AgentSelectionManager agentSelection;
-    private Agent selectedAgent;
+    [SerializeField] private Agent selectedAgent;
 
     private void Awake()
     {
         agentSelection = FindObjectOfType<AgentSelectionManager>();
-        HidePanel();
     }
 
     private void OnEnable()
     {
         agentSelection.OnAgentSelected += UpdateAgent;
-        agentSelection.OnAgentDeselected += DiscardAgent;
+        agentSelection.OnAgentDeselected += DiscardSelectedAgent;
     }
 
     private void UpdateAgent(Agent agent)
@@ -28,21 +28,32 @@ public class AgentDisplay : MonoBehaviour
         agentNameTextField.SetText(agent.Name);
         agentHealthPointsTextField.SetText(agent.HealthPoints.ToString());
         agent.OnHealthChanged += UpdateHealth;
-        agent.OnDeath += UnsubscribeFromAgent;
-        ShowPanel();
+        agent.OnDeath += DisplayAgentDead;
     }
 
-    private void DiscardAgent()
+    private void DisplayAgentDead(Agent agent)
     {
-        HidePanel();
-        UnsubscribeFromAgent(selectedAgent);
+        UnsubscribeFromAgent(agent);
+        agentHealthPointsTextField.SetText("DEAD");
+    }
+
+    private void DiscardSelectedAgent()
+    {
+        ResetPanelData();
+        if (selectedAgent)
+            UnsubscribeFromAgent(selectedAgent);
+    }
+
+    private void ResetPanelData()
+    {
+        agentNameTextField.SetText("-");
+        agentHealthPointsTextField.SetText("-");
     }
 
     private void UnsubscribeFromAgent(Agent agent)
     {
         selectedAgent.OnHealthChanged -= UpdateHealth;
-        selectedAgent.OnDeath -= UnsubscribeFromAgent;
-        HidePanel();
+        selectedAgent.OnDeath -= DisplayAgentDead;
     }
 
     private void UpdateHealth(int newHealthPoints)
@@ -50,22 +61,10 @@ public class AgentDisplay : MonoBehaviour
         agentHealthPointsTextField.SetText(newHealthPoints.ToString());
     }
 
-    private void ShowPanel()
-    {
-        displayPanel.alpha = 1f;
-        displayPanel.interactable = true;
-    }
-
-    private void HidePanel()
-    {
-        displayPanel.alpha = 0f;
-        displayPanel.interactable = false;
-    }
-
     private void OnDisable()
     {
         agentSelection.OnAgentSelected -= UpdateAgent;
-        agentSelection.OnAgentDeselected -= DiscardAgent;
+        agentSelection.OnAgentDeselected -= DiscardSelectedAgent;
         if (selectedAgent)
             selectedAgent.OnDeath -= UnsubscribeFromAgent;
     }

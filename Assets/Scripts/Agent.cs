@@ -7,7 +7,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(MeshRenderer))]
 public class Agent : MonoBehaviour, IDamagable
 {
-    [SerializeField] private string agentName;
+    //[SerializeField] private string agentName;
     [SerializeField] private int initialHealthPoints;
     [SerializeField] private int damageOnContact;
 
@@ -20,7 +20,7 @@ public class Agent : MonoBehaviour, IDamagable
     public delegate void OnDisableCallback(Agent Instance);
     public OnDisableCallback Disable;
 
-    public string Name { get => agentName; private set => agentName = value; }
+    public string Name { get => gameObject.name; }
     public int HealthPoints { get; private set; }
 
     private void Awake()

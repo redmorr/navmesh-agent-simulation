@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.EventSystems;
 using UnityEngine.InputSystem;
 
 public class AgentSelectionManager : MonoBehaviour
@@ -8,7 +9,7 @@ public class AgentSelectionManager : MonoBehaviour
     [SerializeField] private LayerMask selectedAgentLayer;
 
     private PlayerControls inputActions;
-    private Agent currentlySelectedAgent;
+    [SerializeField] private Agent currentlySelectedAgent;
 
     public UnityAction<Agent> OnAgentSelected;
     public UnityAction OnAgentDeselected;
@@ -34,19 +35,26 @@ public class AgentSelectionManager : MonoBehaviour
     {
         Ray ray = Camera.main.ScreenPointToRay(inputActions.Player.Mouse.ReadValue<Vector2>());
 
-        if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, agentLayer, QueryTriggerInteraction.Collide))
+        // TODO: Move IsPointerOverGameObject() to update because when its in input action callback leads to a warning. Explanation below:
+        // https://docs.unity3d.com/Packages/com.unity.inputsystem@1.4/manual/UISupport.html#handling-ambiguities-for-pointer-type-input
+        if (!EventSystem.current.IsPointerOverGameObject())
         {
-            if (hit.collider.TryGetComponent(out Agent agent))
+            if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, agentLayer, QueryTriggerInteraction.Collide))
+            {
+                if (hit.collider.TryGetComponent(out Agent agent))
+                {
+                    if (currentlySelectedAgent != null)
+                        Deselect();
+                    Select(agent);
+                }
+            }
+            else
             {
                 if (currentlySelectedAgent != null)
                     Deselect();
-                Select(agent);
+                else
+                    OnAgentDeselected?.Invoke();
             }
-        }
-        else
-        {
-            if (currentlySelectedAgent != null)
-                Deselect();
         }
     }
 

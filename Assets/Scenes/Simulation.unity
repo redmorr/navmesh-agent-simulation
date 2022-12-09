@@ -1851,7 +1851,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1951,7 +1951,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Name: '
+  m_text: 'Agent:'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2150,7 +2150,7 @@ MonoBehaviour:
   m_fontSizeMax: 72
   m_fontStyle: 0
   m_HorizontalAlignment: 1
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -2228,6 +2228,7 @@ MonoBehaviour:
   displayPanel: {fileID: 1372740600}
   agentNameTextField: {fileID: 1539450535}
   agentHealthPointsTextField: {fileID: 1820198214}
+  selectedAgent: {fileID: 0}
 --- !u!114 &1843578635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2241,7 +2242,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_IgnoreReversedGraphics: 1
-  m_BlockingObjects: 0
+  m_BlockingObjects: 3
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
@@ -2359,6 +2360,7 @@ MonoBehaviour:
   selectedAgentLayer:
     serializedVersion: 2
     m_Bits: 128
+  currentlySelectedAgent: {fileID: 0}
 --- !u!4 &1933291815
 Transform:
   m_ObjectHideFlags: 0

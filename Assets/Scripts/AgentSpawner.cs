@@ -13,6 +13,7 @@ public class AgentSpawner : MonoBehaviour
 
     private Coroutine spawnRoutine;
     private ObjectPool<Agent> agentPool;
+    private int spawnCount = 0;
 
     private void Awake()
     {
@@ -33,6 +34,8 @@ public class AgentSpawner : MonoBehaviour
     private Agent CreateAgent()
     {
         Agent instance = Instantiate(agentPrefab);
+        instance.name = spawnCount.ToString();
+        spawnCount++;
         instance.Disable += ReturnObjectToPool;
         instance.gameObject.SetActive(false);
         return instance;
