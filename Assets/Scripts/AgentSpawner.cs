@@ -45,9 +45,13 @@ public class AgentSpawner : MonoBehaviour
     {
         NavMeshAgent navMeshAgent = instance.GetComponent<NavMeshAgent>();
         navMeshAgent.enabled = true;
-        if (NavMesh.SamplePosition(GetRandomPoint(), out NavMeshHit hit, 2.0f, NavMesh.AllAreas))
+        if (Arena.Instance.GetRandomPosition(out Vector3 position))
         {
-            instance.transform.position = hit.position + Vector3.up;
+            instance.transform.position = position + Vector3.up;
+        }
+        else
+        {
+            instance.transform.position = Vector3.up;
         }
         instance.gameObject.SetActive(true);
     }
@@ -76,17 +80,6 @@ public class AgentSpawner : MonoBehaviour
             if (agentPool.CountActive < agentLimit)
                 agentPool.Get();
         }
-    }
-
-    private Vector3 GetRandomPoint()
-    {
-        Vector3 center = Vector3.zero;
-        float width = 20f;
-        float depth = 20f;
-
-        center.x += Random.Range(-0.5f, 0.5f) * width;
-        center.z += Random.Range(-0.5f, 0.5f) * depth;
-        return center;
     }
 
     private void OnGUI()

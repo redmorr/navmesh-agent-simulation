@@ -42,7 +42,7 @@ public class Agent : MonoBehaviour, IDamagable
 
     private void EnableNavmeshAgent()
     {
-        if (NavMesh.SamplePosition(transform.position, out NavMeshHit _, 1.0f, NavMesh.AllAreas))
+        if (Arena.Instance.IsAgentOnNavMesh(transform.position))
         {
             navMeshAgent.enabled = true;
         }
@@ -65,26 +65,15 @@ public class Agent : MonoBehaviour, IDamagable
     {
         if (navMeshAgent.enabled && !navMeshAgent.pathPending && navMeshAgent.remainingDistance <= 0.2f)
         {
-            if (NavMesh.SamplePosition(GetRandomPoint(), out NavMeshHit hit, 2.0f, NavMesh.AllAreas))
+            if (Arena.Instance.GetRandomPosition(out Vector3 position))
             {
-                navMeshAgent.SetDestination(hit.position);
+                navMeshAgent.SetDestination(position);
             }
             else
             {
                 Disable?.Invoke(this);
             }
         }
-    }
-
-    private Vector3 GetRandomPoint()
-    {
-        Vector3 center = Vector3.zero;
-        float width = 20f;
-        float depth = 20f;
-
-        center.x += Random.Range(-0.5f, 0.5f) * width;
-        center.z += Random.Range(-0.5f, 0.5f) * depth;
-        return center;
     }
 
     public void ReceiveDamage(int amount)
