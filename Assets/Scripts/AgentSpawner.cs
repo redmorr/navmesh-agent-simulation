@@ -34,7 +34,7 @@ public class AgentSpawner : MonoBehaviour
 
     private Agent CreateAgent()
     {
-        Agent instance = Instantiate(agentPrefab);
+        Agent instance = Instantiate(agentPrefab, transform);
         instance.name = spawnCount.ToString();
         spawnCount++;
         instance.Disable += ReturnObjectToPool;
@@ -71,7 +71,7 @@ public class AgentSpawner : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(agentSpawnDelayInSeconds);
+            yield return new WaitForSeconds(Random.Range(randomSpawnRange.x, randomSpawnRange.y));
 
             if (agentPool.CountActive < agentLimit)
                 agentPool.Get();
