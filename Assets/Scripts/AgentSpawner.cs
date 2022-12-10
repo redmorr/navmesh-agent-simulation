@@ -9,7 +9,6 @@ public class AgentSpawner : MonoBehaviour
     [SerializeField][Range(1, 10000)] private int agentPoolDefaultCapacity;
     [SerializeField][Range(1, 10000)] private int agentPoolMaxCapacity;
     [SerializeField][Range(0, 10000)] private int agentLimit;
-    [SerializeField][Range(0.01f, 10f)] private float agentSpawnDelayInSeconds;
     [SerializeField][MinMaxRange(0f, 10f)] private Vector2 randomSpawnRange;
 
     private Coroutine spawnRoutine;
@@ -44,10 +43,11 @@ public class AgentSpawner : MonoBehaviour
 
     private void OnGetAgent(Agent instance)
     {
+        NavMeshAgent navMeshAgent = instance.GetComponent<NavMeshAgent>();
+        navMeshAgent.enabled = true;
         if (NavMesh.SamplePosition(GetRandomPoint(), out NavMeshHit hit, 2.0f, NavMesh.AllAreas))
         {
-            NavMeshAgent navMeshAgent = instance.GetComponent<NavMeshAgent>();
-            navMeshAgent.Warp(hit.position);
+            instance.transform.position = hit.position + Vector3.up;
         }
         instance.gameObject.SetActive(true);
     }

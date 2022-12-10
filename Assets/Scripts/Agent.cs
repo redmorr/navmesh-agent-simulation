@@ -1,3 +1,5 @@
+using System.Collections;
+using UnityEditor;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
@@ -9,17 +11,18 @@ public class Agent : MonoBehaviour, IDamagable
 {
     //[SerializeField] private string agentName;
     [SerializeField] private int initialHealthPoints;
-    [SerializeField] private int damageOnContact;
+    [SerializeField] private int damageOtherOnContact;
 
+    private MeshRenderer meshRenderer;
     private NavMeshAgent navMeshAgent;
     private Rigidbody rb;
     private int originalLayerID;
 
+    private Color originalColor;
+
     private Vector3 knockbackForce;
     private float knockbackTime = 0f;
 
-    private int fixedframes = 0;
-    private int dynamicframes = 0;
     private bool bumped = false;
 
     public UnityAction<int> OnHealthChanged;
@@ -33,6 +36,8 @@ public class Agent : MonoBehaviour, IDamagable
 
     private void Awake()
     {
+        meshRenderer = GetComponent<MeshRenderer>();
+        originalColor = meshRenderer.material.color;
         navMeshAgent = GetComponent<NavMeshAgent>();
         rb = GetComponent<Rigidbody>();
         originalLayerID = gameObject.layer;
@@ -40,13 +45,16 @@ public class Agent : MonoBehaviour, IDamagable
 
     private void OnEnable()
     {
+        meshRenderer.material.color = originalColor;
         HealthPoints = initialHealthPoints;
         gameObject.layer = originalLayerID;
+        navMeshAgent.enabled = true;
+        bumped = false;
     }
 
     private void Update()
     {
-        if (navMeshAgent.enabled && navMeshAgent.remainingDistance <= 0.2f)
+        if (navMeshAgent.enabled && !navMeshAgent.pathPending && navMeshAgent.remainingDistance <= 0.2f)
         {
             if (NavMesh.SamplePosition(GetRandomPoint(), out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
             {
@@ -59,12 +67,11 @@ public class Agent : MonoBehaviour, IDamagable
         if (bumped)
         {
             knockbackTime += Time.fixedDeltaTime;
-            rb.MovePosition(transform.position + Vector3.Lerp(knockbackForce, Vector3.zero, knockbackTime) *Time.fixedDeltaTime);
+            rb.MovePosition(transform.position + Vector3.Lerp(knockbackForce, Vector3.zero, knockbackTime) * Time.fixedDeltaTime);
             if (knockbackTime > 1f)
             {
                 bumped = false;
                 navMeshAgent.enabled = true;
-                navMeshAgent.updatePosition = true;
             }
         }
     }
@@ -87,19 +94,31 @@ public class Agent : MonoBehaviour, IDamagable
         if (HealthPoints <= 0)
         {
             OnDeath?.Invoke(this);
-            Disable?.Invoke(this);
+            StartCoroutine(Despawn());
         }
+    }
+
+    private IEnumerator Despawn()
+    {
+        meshRenderer.material.color = new Color(1f, 0f, 0f, 1f);
+        yield return new WaitForSeconds(0.6f);
+
+        Disable?.Invoke(this);
     }
 
     private void OnCollisionEnter(Collision collision)
     {
-        Debug.Log(string.Format("Collision In: {0} {1} {2}", gameObject.name, fixedframes, dynamicframes));
-        Vector3 velocity1 = navMeshAgent.velocity;
-        navMeshAgent.updatePosition = false;
-        navMeshAgent.enabled = false;
-        knockbackForce = -velocity1;
-        knockbackTime = 0f;
+        if (collision.collider.TryGetComponent(out IDamagable damagable))
+        {
+            damagable.ReceiveDamage(damageOtherOnContact);
 
-        bumped = true;
+            Vector3 velocity1 = navMeshAgent.velocity;
+            navMeshAgent.enabled = false;
+            knockbackForce = 2f * (transform.position - collision.transform.position);
+            knockbackTime = 0f;
+
+            bumped = true;
+
+        }
     }
 }
