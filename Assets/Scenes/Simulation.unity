@@ -1271,9 +1271,9 @@ MonoBehaviour:
     type: 3}
   agentPoolDefaultCapacity: 1000
   agentPoolMaxCapacity: 10000
-  agentLimit: 29
+  agentLimit: 10
   agentSpawnDelayInSeconds: 0.1
-  randomSpawnRange: {x: 2, y: 5}
+  randomSpawnRange: {x: 0, y: 0}
 --- !u!4 &1340064101
 Transform:
   m_ObjectHideFlags: 0

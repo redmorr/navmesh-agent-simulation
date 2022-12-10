@@ -12,7 +12,15 @@ public class Agent : MonoBehaviour, IDamagable
     [SerializeField] private int damageOnContact;
 
     private NavMeshAgent navMeshAgent;
+    private Rigidbody rb;
     private int originalLayerID;
+
+    private Vector3 knockbackForce;
+    private float knockbackTime = 0f;
+
+    private int fixedframes = 0;
+    private int dynamicframes = 0;
+    private bool bumped = false;
 
     public UnityAction<int> OnHealthChanged;
     public UnityAction<Agent> OnDeath;
@@ -26,6 +34,7 @@ public class Agent : MonoBehaviour, IDamagable
     private void Awake()
     {
         navMeshAgent = GetComponent<NavMeshAgent>();
+        rb = GetComponent<Rigidbody>();
         originalLayerID = gameObject.layer;
     }
 
@@ -37,11 +46,25 @@ public class Agent : MonoBehaviour, IDamagable
 
     private void Update()
     {
-        if (navMeshAgent.remainingDistance <= 0.2f)
+        if (navMeshAgent.enabled && navMeshAgent.remainingDistance <= 0.2f)
         {
             if (NavMesh.SamplePosition(GetRandomPoint(), out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
             {
                 navMeshAgent.SetDestination(hit.position);
+            }
+        }
+    }
+    private void FixedUpdate()
+    {
+        if (bumped)
+        {
+            knockbackTime += Time.fixedDeltaTime;
+            rb.MovePosition(transform.position + Vector3.Lerp(knockbackForce, Vector3.zero, knockbackTime) *Time.fixedDeltaTime);
+            if (knockbackTime > 1f)
+            {
+                bumped = false;
+                navMeshAgent.enabled = true;
+                navMeshAgent.updatePosition = true;
             }
         }
     }
@@ -68,11 +91,15 @@ public class Agent : MonoBehaviour, IDamagable
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnCollisionEnter(Collision collision)
     {
-        if (other.TryGetComponent(out Agent damagable))
-        {
-            damagable.ReceiveDamage(damageOnContact);
-        }
+        Debug.Log(string.Format("Collision In: {0} {1} {2}", gameObject.name, fixedframes, dynamicframes));
+        Vector3 velocity1 = navMeshAgent.velocity;
+        navMeshAgent.updatePosition = false;
+        navMeshAgent.enabled = false;
+        knockbackForce = -velocity1;
+        knockbackTime = 0f;
+
+        bumped = true;
     }
 }
