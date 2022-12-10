@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 1883438421628031126}
   - component: {fileID: 1883438421628031127}
   - component: {fileID: 1883438421628031121}
+  - component: {fileID: 8197692280000954362}
   m_Layer: 3
   m_Name: Agent
   m_TagString: Untagged
@@ -152,4 +153,18 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   initialHealthPoints: 3
+--- !u!114 &8197692280000954362
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1883438421628031132}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9b7c6b8134dbc86428b3f54a352f5a94, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
   damageOtherOnContact: 1
+  knockbackDuration: 1
+  knockbackForce: 5
