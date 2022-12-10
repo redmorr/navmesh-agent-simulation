@@ -1273,6 +1273,7 @@ MonoBehaviour:
   agentPoolMaxCapacity: 10000
   agentLimit: 29
   agentSpawnDelayInSeconds: 0.1
+  randomSpawnRange: {x: 2, y: 7}
 --- !u!4 &1340064101
 Transform:
   m_ObjectHideFlags: 0

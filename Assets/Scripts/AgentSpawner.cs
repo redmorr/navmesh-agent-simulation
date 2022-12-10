@@ -10,6 +10,7 @@ public class AgentSpawner : MonoBehaviour
     [SerializeField][Range(1, 10000)] private int agentPoolMaxCapacity;
     [SerializeField][Range(0, 10000)] private int agentLimit;
     [SerializeField][Range(0.01f, 10f)] private float agentSpawnDelayInSeconds;
+    [SerializeField][MinMaxRange(0f, 10f)] private Vector2 randomSpawnRange;
 
     private Coroutine spawnRoutine;
     private ObjectPool<Agent> agentPool;
