@@ -1,60 +1,71 @@
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(Collider))]
 [RequireComponent(typeof(MeshRenderer))]
 public class Agent : MonoBehaviour, IDamagable
 {
     //[SerializeField] private string agentName;
     [SerializeField] private int initialHealthPoints;
-    [SerializeField] private int damageOnContact;
 
+    private MeshRenderer meshRenderer;
     private NavMeshAgent navMeshAgent;
+    private AgentCollision agentCollision;
     private int originalLayerID;
-
-    public UnityAction<int> OnHealthChanged;
-    public UnityAction<Agent> OnDeath;
+    private Color originalColor;
 
     public delegate void OnDisableCallback(Agent Instance);
     public OnDisableCallback Disable;
+    public UnityAction<int> OnHealthChanged;
+    public UnityAction<Agent> OnDeath;
 
     public string Name { get => gameObject.name; }
     public int HealthPoints { get; private set; }
 
     private void Awake()
     {
+        agentCollision = GetComponent<AgentCollision>();
+        meshRenderer = GetComponent<MeshRenderer>();
+        originalColor = meshRenderer.material.color;
         navMeshAgent = GetComponent<NavMeshAgent>();
+
         originalLayerID = gameObject.layer;
+        agentCollision.OnKnockbackStarted += DisableNavmeshAgent;
+        agentCollision.OnKnockbackEnded += EnableNavmeshAgent;
+    }
+
+    private void DisableNavmeshAgent()
+    {
+        navMeshAgent.enabled = false;
+    }
+
+    private void EnableNavmeshAgent()
+    {
+        navMeshAgent.enabled = true;
     }
 
     private void OnEnable()
     {
+        meshRenderer.material.color = originalColor;
         HealthPoints = initialHealthPoints;
         gameObject.layer = originalLayerID;
+        navMeshAgent.enabled = true;
     }
 
     private void Update()
     {
-        if (navMeshAgent.remainingDistance <= 0.2f)
+        if (navMeshAgent.enabled && !navMeshAgent.pathPending && navMeshAgent.remainingDistance <= 0.2f)
         {
-            if (NavMesh.SamplePosition(GetRandomPoint(), out NavMeshHit hit, 1.0f, NavMesh.AllAreas))
+            if (Arena.Instance.GetRandomPosition(out Vector3 position))
             {
-                navMeshAgent.SetDestination(hit.position);
+                navMeshAgent.SetDestination(position);
+            }
+            else
+            {
+                Disable?.Invoke(this);
             }
         }
-    }
-
-    private Vector3 GetRandomPoint()
-    {
-        Vector3 center = Vector3.zero;
-        float width = 20f;
-        float depth = 20f;
-
-        center.x += Random.Range(-0.5f, 0.5f) * width;
-        center.z += Random.Range(-0.5f, 0.5f) * depth;
-        return center;
     }
 
     public void ReceiveDamage(int amount)
@@ -64,15 +75,15 @@ public class Agent : MonoBehaviour, IDamagable
         if (HealthPoints <= 0)
         {
             OnDeath?.Invoke(this);
-            Disable?.Invoke(this);
+            StartCoroutine(Despawn());
         }
     }
 
-    private void OnTriggerEnter(Collider other)
+    private IEnumerator Despawn()
     {
-        if (other.TryGetComponent(out Agent damagable))
-        {
-            damagable.ReceiveDamage(damageOnContact);
-        }
+        meshRenderer.material.color = new Color(1f, 0f, 0f, 1f);
+        yield return new WaitForSeconds(0.6f);
+
+        Disable?.Invoke(this);
     }
 }
