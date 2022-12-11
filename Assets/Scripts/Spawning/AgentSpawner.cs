@@ -6,10 +6,11 @@ using UnityEngine.Pool;
 public class AgentSpawner : MonoBehaviour
 {
     [SerializeField] private Agent agentPrefab;
-    [SerializeField][Range(1, 1000)] private int objectPoolDefaultCapacity;
-    [SerializeField][Range(1, 1000)] private int objectPoolMaxCapacity;
-    [SerializeField][Range(0, 1000)] private int agentLimit;
+    [SerializeField][Range(0, 200)] private int agentLimit;
     [SerializeField][MinMaxRange(0f, 10f)] private Vector2 randomSpawnRangeTime;
+
+    private readonly int objectPoolMaxCapacity = 200;
+    private readonly int objectPoolDefaultCapacity = 200;
 
     private ObjectPool<Agent> agentPool;
     private Coroutine spawnRoutine;
@@ -17,7 +18,14 @@ public class AgentSpawner : MonoBehaviour
 
     private void Awake()
     {
-        agentPool = new ObjectPool<Agent>(CreateAgent, OnGetAgent, OnReleaseAgent, OnDestroyObjectAgent, false, objectPoolDefaultCapacity, objectPoolMaxCapacity);
+        agentPool = new ObjectPool<Agent>(
+            CreateAgent,
+            OnGetAgent,
+            OnReleaseAgent,
+            OnDestroyObjectAgent,
+            false,
+            objectPoolDefaultCapacity,
+            objectPoolMaxCapacity);
     }
 
     private void OnEnable()

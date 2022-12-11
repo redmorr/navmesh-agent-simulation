@@ -5,9 +5,7 @@ using UnityEngine.Events;
 [RequireComponent(typeof(Collider))]
 public class AgentCollision : MonoBehaviour
 {
-    [SerializeField] private int damageOtherOnContact;
-    [SerializeField][Range(0.1f, 2f)] private float knockbackDuration = 1f;
-    [SerializeField][Range(0.1f, 50f)] private float knockbackForce = 2f;
+    [SerializeField] private CollisionData collisionData;
 
     private Vector3 knockbackVelocity;
     private float knockbackTimer;
@@ -33,9 +31,9 @@ public class AgentCollision : MonoBehaviour
         if (isBeingKnockedBack)
         {
             knockbackTimer += Time.fixedDeltaTime;
-            rb.MovePosition(transform.position + Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackTimer / knockbackDuration) * Time.fixedDeltaTime);
+            rb.MovePosition(transform.position + Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackTimer / collisionData.KnockbackDuration) * Time.fixedDeltaTime);
 
-            if (knockbackTimer > knockbackDuration)
+            if (knockbackTimer > collisionData.KnockbackDuration)
             {
                 isBeingKnockedBack = false;
                 OnKnockbackEnded?.Invoke();
@@ -47,10 +45,10 @@ public class AgentCollision : MonoBehaviour
     {
         if (collision.collider.TryGetComponent(out IDamagable damagable))
         {
-            damagable.ReceiveDamage(damageOtherOnContact);
+            damagable.ReceiveDamage(collisionData.DamageOtherOnContact);
             OnKnockbackStarted?.Invoke();
             Vector3 directionFromOtherCollider = (transform.position - collision.transform.position).normalized;
-            knockbackVelocity = knockbackForce * directionFromOtherCollider;
+            knockbackVelocity = collisionData.KnockbackForce * directionFromOtherCollider;
             knockbackTimer = 0f;
             isBeingKnockedBack = true;
         }

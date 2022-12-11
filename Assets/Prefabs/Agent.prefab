@@ -65,9 +65,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9b7c6b8134dbc86428b3f54a352f5a94, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damageOtherOnContact: 1
-  knockbackDuration: 1
-  knockbackForce: 5
+  collisionData: {fileID: 11400000, guid: 6a1beec0f939a3b41a8c83accee6f317, type: 2}
 --- !u!33 &1883438421628031123
 MeshFilter:
   m_ObjectHideFlags: 0

@@ -1344,8 +1344,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   agentPrefab: {fileID: 1883438421628031121, guid: c61ff5736e94f924aafaaae5554c5ae3,
     type: 3}
-  objectPoolDefaultCapacity: 100
-  objectPoolMaxCapacity: 100
   agentLimit: 30
   randomSpawnRangeTime: {x: 2, y: 7}
 --- !u!4 &1340064101
