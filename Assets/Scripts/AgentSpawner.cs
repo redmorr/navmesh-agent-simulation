@@ -6,18 +6,18 @@ using UnityEngine.Pool;
 public class AgentSpawner : MonoBehaviour
 {
     [SerializeField] private Agent agentPrefab;
-    [SerializeField][Range(1, 10000)] private int agentPoolDefaultCapacity;
-    [SerializeField][Range(1, 10000)] private int agentPoolMaxCapacity;
-    [SerializeField][Range(0, 10000)] private int agentLimit;
-    [SerializeField][MinMaxRange(0f, 10f)] private Vector2 randomSpawnRange;
+    [SerializeField][Range(1, 1000)] private int objectPoolDefaultCapacity;
+    [SerializeField][Range(1, 1000)] private int objectPoolMaxCapacity;
+    [SerializeField][Range(0, 1000)] private int agentLimit;
+    [SerializeField][MinMaxRange(0f, 10f)] private Vector2 randomSpawnRangeTime;
 
-    private Coroutine spawnRoutine;
     private ObjectPool<Agent> agentPool;
-    private int spawnCount = 0;
+    private Coroutine spawnRoutine;
+    private int spawnCounter = 0;
 
     private void Awake()
     {
-        agentPool = new ObjectPool<Agent>(CreateAgent, OnGetAgent, OnReleaseAgent, OnDestroyObjectAgent, false, agentPoolDefaultCapacity, agentPoolMaxCapacity);
+        agentPool = new ObjectPool<Agent>(CreateAgent, OnGetAgent, OnReleaseAgent, OnDestroyObjectAgent, false, objectPoolDefaultCapacity, objectPoolMaxCapacity);
     }
 
     private void OnEnable()
@@ -34,8 +34,8 @@ public class AgentSpawner : MonoBehaviour
     private Agent CreateAgent()
     {
         Agent instance = Instantiate(agentPrefab, transform);
-        instance.name = spawnCount.ToString();
-        spawnCount++;
+        spawnCounter++;
+        instance.name = spawnCounter.ToString();
         instance.Disable += ReturnObjectToPool;
         instance.gameObject.SetActive(false);
         return instance;
@@ -45,14 +45,12 @@ public class AgentSpawner : MonoBehaviour
     {
         NavMeshAgent navMeshAgent = instance.GetComponent<NavMeshAgent>();
         navMeshAgent.enabled = true;
+
         if (Arena.Instance.GetRandomPosition(out Vector3 position))
-        {
             instance.transform.position = position + Vector3.up;
-        }
         else
-        {
             instance.transform.position = Vector3.up;
-        }
+
         instance.gameObject.SetActive(true);
     }
 
@@ -75,7 +73,7 @@ public class AgentSpawner : MonoBehaviour
     {
         while (true)
         {
-            yield return new WaitForSeconds(Random.Range(randomSpawnRange.x, randomSpawnRange.y));
+            yield return new WaitForSeconds(Random.Range(randomSpawnRangeTime.x, randomSpawnRangeTime.y));
 
             if (agentPool.CountActive < agentLimit)
                 agentPool.Get();

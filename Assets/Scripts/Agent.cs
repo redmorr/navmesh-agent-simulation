@@ -3,46 +3,41 @@ using UnityEngine;
 using UnityEngine.AI;
 using UnityEngine.Events;
 
+[RequireComponent(typeof(AgentCollision))]
 [RequireComponent(typeof(MeshRenderer))]
+[RequireComponent(typeof(NavMeshAgent))]
 public class Agent : MonoBehaviour, IDamagable
 {
-    //[SerializeField] private string agentName;
     [SerializeField] private int initialHealthPoints;
+    [SerializeField][Range(0f, 1f)] private float despawnDuration;
+    [SerializeField] private Color colorOnDeath;
 
+    private AgentCollision agentCollision;
     private MeshRenderer meshRenderer;
     private NavMeshAgent navMeshAgent;
-    private AgentCollision agentCollision;
-    private int originalLayerID;
     private Color originalColor;
+    private int originalLayerID;
 
     public delegate void OnDisableCallback(Agent Instance);
-    public OnDisableCallback Disable;
+
     public UnityAction<int> OnHealthChanged;
+    public OnDisableCallback Disable;
     public UnityAction<Agent> OnDeath;
 
-    public string Name { get => gameObject.name; }
     public int HealthPoints { get; private set; }
+    public string Name { get => gameObject.name; }
 
     private void Awake()
     {
         agentCollision = GetComponent<AgentCollision>();
-        meshRenderer = GetComponent<MeshRenderer>();
-        originalColor = meshRenderer.material.color;
         navMeshAgent = GetComponent<NavMeshAgent>();
+        meshRenderer = GetComponent<MeshRenderer>();
 
         originalLayerID = gameObject.layer;
+        originalColor = meshRenderer.material.color;
+
         agentCollision.OnKnockbackStarted += DisableNavmeshAgent;
         agentCollision.OnKnockbackEnded += EnableNavmeshAgent;
-    }
-
-    private void DisableNavmeshAgent()
-    {
-        navMeshAgent.enabled = false;
-    }
-
-    private void EnableNavmeshAgent()
-    {
-        navMeshAgent.enabled = true;
     }
 
     private void OnEnable()
@@ -58,13 +53,9 @@ public class Agent : MonoBehaviour, IDamagable
         if (navMeshAgent.enabled && !navMeshAgent.pathPending && navMeshAgent.remainingDistance <= 0.2f)
         {
             if (Arena.Instance.GetRandomPosition(out Vector3 position))
-            {
                 navMeshAgent.SetDestination(position);
-            }
             else
-            {
                 Disable?.Invoke(this);
-            }
         }
     }
 
@@ -81,9 +72,18 @@ public class Agent : MonoBehaviour, IDamagable
 
     private IEnumerator Despawn()
     {
-        meshRenderer.material.color = new Color(1f, 0f, 0f, 1f);
-        yield return new WaitForSeconds(0.6f);
-
+        meshRenderer.material.color = colorOnDeath;
+        yield return new WaitForSeconds(despawnDuration);
         Disable?.Invoke(this);
+    }
+
+    private void DisableNavmeshAgent()
+    {
+        navMeshAgent.enabled = false;
+    }
+
+    private void EnableNavmeshAgent()
+    {
+        navMeshAgent.enabled = true;
     }
 }

@@ -6,8 +6,8 @@ using UnityEngine.Events;
 public class AgentCollision : MonoBehaviour
 {
     [SerializeField] private int damageOtherOnContact;
-    [SerializeField] private float knockbackDuration = 1f;
-    [SerializeField] private float knockbackForce = 2f;
+    [SerializeField][Range(0.1f, 2f)] private float knockbackDuration = 1f;
+    [SerializeField][Range(0.1f, 50f)] private float knockbackForce = 2f;
 
     private Vector3 knockbackVelocity;
     private float knockbackTimer;
@@ -34,6 +34,7 @@ public class AgentCollision : MonoBehaviour
         {
             knockbackTimer += Time.fixedDeltaTime;
             rb.MovePosition(transform.position + Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackTimer / knockbackDuration) * Time.fixedDeltaTime);
+
             if (knockbackTimer > knockbackDuration)
             {
                 isBeingKnockedBack = false;
@@ -48,7 +49,8 @@ public class AgentCollision : MonoBehaviour
         {
             damagable.ReceiveDamage(damageOtherOnContact);
             OnKnockbackStarted?.Invoke();
-            knockbackVelocity = knockbackForce * (transform.position - collision.transform.position).normalized;
+            Vector3 directionFromOtherCollider = (transform.position - collision.transform.position).normalized;
+            knockbackVelocity = knockbackForce * directionFromOtherCollider;
             knockbackTimer = 0f;
             isBeingKnockedBack = true;
         }
