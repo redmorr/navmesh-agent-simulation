@@ -9,12 +9,11 @@ public class AgentSelectionManager : MonoBehaviour
     [SerializeField] private LayerMask selectedAgentLayer;
 
     private PlayerControls inputActions;
-    [SerializeField] private Agent currentlySelectedAgent;
+    private Agent currentlySelectedAgent;
+    private bool isPointerOverUI;
 
     public UnityAction<Agent> OnAgentSelected;
     public UnityAction OnAgentDeselected;
-
-    private bool isPointerOverUI;
 
     private void Awake()
     {
@@ -23,13 +22,13 @@ public class AgentSelectionManager : MonoBehaviour
 
     private void OnEnable()
     {
-        inputActions.Player.Select.performed += SelectAgent;
+        inputActions.Player.Select.performed += DetectAgent;
         inputActions.Enable();
     }
 
     private void OnDisable()
     {
-        inputActions.Player.Select.performed -= SelectAgent;
+        inputActions.Player.Select.performed -= DetectAgent;
         inputActions.Disable();
     }
 
@@ -40,38 +39,47 @@ public class AgentSelectionManager : MonoBehaviour
         isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
     }
 
-    private void SelectAgent(InputAction.CallbackContext _)
+    private void DetectAgent(InputAction.CallbackContext _)
     {
         if (!isPointerOverUI)
         {
             Ray ray = Camera.main.ScreenPointToRay(inputActions.Player.Mouse.ReadValue<Vector2>());
+
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, agentLayer, QueryTriggerInteraction.Collide))
-            {
-                if (hit.collider.TryGetComponent(out Agent agent))
-                {
-                    if (currentlySelectedAgent != null)
-                        Deselect();
-                    Select(agent);
-                }
-            }
+                TryToSelectAgent(hit);
             else
-            {
-                if (currentlySelectedAgent != null)
-                    Deselect();
-                else
-                    OnAgentDeselected?.Invoke();
-            }
+                DeselectAgent();
         }
     }
 
-    private void Select(Agent agent)
+    private void TryToSelectAgent(RaycastHit hit)
+    {
+        if (hit.collider.TryGetComponent(out Agent agent))
+        {
+            if (currentlySelectedAgent != null)
+            {
+                PerformDeselection();
+            }
+            PerformSelection(agent);
+        }
+    }
+
+    private void DeselectAgent()
+    {
+        if (currentlySelectedAgent != null)
+            PerformDeselection();
+        else
+            OnAgentDeselected?.Invoke();
+    }
+
+    private void PerformSelection(Agent agent)
     {
         currentlySelectedAgent = agent;
         currentlySelectedAgent.gameObject.layer = LayerMaskToInt(selectedAgentLayer);
         OnAgentSelected?.Invoke(currentlySelectedAgent);
     }
 
-    private void Deselect()
+    private void PerformDeselection()
     {
         currentlySelectedAgent.gameObject.layer = LayerMaskToInt(agentLayer);
         OnAgentDeselected?.Invoke();
