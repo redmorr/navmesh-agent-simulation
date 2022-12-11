@@ -42,15 +42,7 @@ public class Agent : MonoBehaviour, IDamagable
 
     private void EnableNavmeshAgent()
     {
-        if (Arena.Instance.IsAgentOnNavMesh(transform.position))
-        {
-            navMeshAgent.enabled = true;
-        }
-        else
-        {
-            OnDeath?.Invoke(this);
-            Disable?.Invoke(this);
-        }
+        navMeshAgent.enabled = true;
     }
 
     private void OnEnable()
