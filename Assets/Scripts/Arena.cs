@@ -1,21 +1,30 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class Arena : Singleton<Arena>
 {
+    private float boundsX;
+    private float boundsZ;
+    private Vector3 center;
+
+    protected override void Awake()
+    {
+        base.Awake();
+        center = transform.position;
+        Mesh mesh = GetComponent<MeshFilter>().mesh;
+        Bounds bounds = mesh.bounds;
+
+        boundsX = transform.localScale.x * bounds.size.x;
+        boundsZ = transform.localScale.z * bounds.size.z;
+    }
+
     private Vector3 GetRandomPoint()
     {
-        Vector3 center = Vector3.zero;
-        float width = 20f;
-        float depth = 20f;
+        Vector3 randomPoint = center;
 
-        NavMesh.SamplePosition(Vector3.zero, out NavMeshHit _, 1.0f, NavMesh.AllAreas);
-
-        center.x += Random.Range(-0.5f, 0.5f) * width;
-        center.z += Random.Range(-0.5f, 0.5f) * depth;
-        return center;
+        randomPoint.x += Random.Range(-0.5f, 0.5f) * boundsX;
+        randomPoint.z += Random.Range(-0.5f, 0.5f) * boundsZ;
+        return randomPoint;
     }
 
     public bool GetRandomPosition(out Vector3 position)
@@ -35,5 +44,3 @@ public class Arena : Singleton<Arena>
         return NavMesh.SamplePosition(position, out NavMeshHit _, 1.0f, NavMesh.AllAreas);
     }
 }
-
-
