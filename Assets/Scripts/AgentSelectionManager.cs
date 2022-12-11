@@ -14,6 +14,8 @@ public class AgentSelectionManager : MonoBehaviour
     public UnityAction<Agent> OnAgentSelected;
     public UnityAction OnAgentDeselected;
 
+    private bool isPointerOverUI;
+
     private void Awake()
     {
         inputActions = new PlayerControls();
@@ -31,14 +33,18 @@ public class AgentSelectionManager : MonoBehaviour
         inputActions.Disable();
     }
 
+    private void Update()
+    {
+        // IsPointerOverGameObject() procudes a warning when called in Input Actions callback. Read the docs below:
+        // https://docs.unity3d.com/Packages/com.unity.inputsystem@1.4/manual/UISupport.html#handling-ambiguities-for-pointer-type-input
+        isPointerOverUI = EventSystem.current.IsPointerOverGameObject();
+    }
+
     private void SelectAgent(InputAction.CallbackContext _)
     {
-        Ray ray = Camera.main.ScreenPointToRay(inputActions.Player.Mouse.ReadValue<Vector2>());
-
-        // TODO: Move IsPointerOverGameObject() to update because when its in input action callback leads to a warning. Explanation below:
-        // https://docs.unity3d.com/Packages/com.unity.inputsystem@1.4/manual/UISupport.html#handling-ambiguities-for-pointer-type-input
-        if (!EventSystem.current.IsPointerOverGameObject())
+        if (!isPointerOverUI)
         {
+            Ray ray = Camera.main.ScreenPointToRay(inputActions.Player.Mouse.ReadValue<Vector2>());
             if (Physics.Raycast(ray, out RaycastHit hit, Mathf.Infinity, agentLayer, QueryTriggerInteraction.Collide))
             {
                 if (hit.collider.TryGetComponent(out Agent agent))
