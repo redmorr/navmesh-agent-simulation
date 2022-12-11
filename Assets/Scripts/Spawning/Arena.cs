@@ -5,25 +5,21 @@ public class Arena : Singleton<Arena>
 {
     private float boundsX;
     private float boundsZ;
-    private Vector3 center;
 
     protected override void Awake()
     {
         base.Awake();
-        center = transform.position;
         Mesh mesh = GetComponent<MeshFilter>().mesh;
-        Bounds bounds = mesh.bounds;
-
-        boundsX = transform.localScale.x * bounds.size.x;
-        boundsZ = transform.localScale.z * bounds.size.z;
+        boundsX = mesh.bounds.size.x;
+        boundsZ = mesh.bounds.size.z;
     }
 
     private Vector3 GetRandomPoint()
     {
-        Vector3 randomPoint = center;
+        Vector3 randomPoint = transform.position;
 
-        randomPoint.x += Random.Range(-0.5f, 0.5f) * boundsX;
-        randomPoint.z += Random.Range(-0.5f, 0.5f) * boundsZ;
+        randomPoint.x += Random.Range(-0.5f, 0.5f) * transform.localScale.x * boundsX;
+        randomPoint.z += Random.Range(-0.5f, 0.5f) * transform.localScale.z * boundsZ;
         return randomPoint;
     }
 
