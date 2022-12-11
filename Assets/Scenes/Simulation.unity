@@ -1051,7 +1051,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Health: '
+  m_text: '[HP]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -1964,7 +1964,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Agent:'
+  m_text: '[NAME]'
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
   m_sharedMaterial: {fileID: 2180264, guid: 8f586378b4e144a9851e7b34d9b748ee, type: 2}
@@ -2214,11 +2214,11 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1843578638}
+  - component: {fileID: 1843578634}
+  - component: {fileID: 1843578639}
   - component: {fileID: 1843578637}
   - component: {fileID: 1843578636}
   - component: {fileID: 1843578635}
-  - component: {fileID: 1843578634}
-  - component: {fileID: 1843578639}
   m_Layer: 5
   m_Name: UI
   m_TagString: Untagged
@@ -2239,9 +2239,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   displayPanel: {fileID: 1372740600}
-  agentNameTextField: {fileID: 1539450535}
-  agentHealthPointsTextField: {fileID: 1820198214}
-  selectedAgent: {fileID: 0}
+  displayStrings: {fileID: 11400000, guid: 8d76b08334aa2764f8f303b14835cb32, type: 2}
+  agentNameLabelText: {fileID: 1595030707}
+  agentNameValueText: {fileID: 1539450535}
+  agentHealthLabelText: {fileID: 792317707}
+  agentHealthValueText: {fileID: 1820198214}
 --- !u!114 &1843578635
 MonoBehaviour:
   m_ObjectHideFlags: 0
