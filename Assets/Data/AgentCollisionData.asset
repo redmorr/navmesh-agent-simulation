@@ -13,5 +13,5 @@ MonoBehaviour:
   m_Name: AgentCollisionData
   m_EditorClassIdentifier: 
   DamageOtherOnContact: 1
-  KnockbackDuration: 2
-  KnockbackForce: 30
+  KnockbackDuration: 1
+  KnockbackForce: 5
