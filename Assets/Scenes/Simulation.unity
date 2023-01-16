@@ -1400,8 +1400,8 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
   m_AnchorMax: {x: 0, y: 0}
-  m_AnchoredPosition: {x: 319.8837, y: 0}
-  m_SizeDelta: {x: 309.8837, y: 0}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 0, y: 0}
   m_Pivot: {x: 1, y: 1}
 --- !u!114 &1361602099
 MonoBehaviour:
@@ -2298,12 +2298,18 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e8e51ad427405ce4fb295051807d7d44, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agentLayer:
+    serializedVersion: 2
+    m_Bits: 8
+  selectedAgentLayer:
+    serializedVersion: 2
+    m_Bits: 128
   displayPanel: {fileID: 1372740600}
   displayStrings: {fileID: 11400000, guid: 8d76b08334aa2764f8f303b14835cb32, type: 2}
-  agentNameLabelText: {fileID: 1595030707}
-  agentNameValueText: {fileID: 1539450535}
-  agentHealthLabelText: {fileID: 792317707}
-  agentHealthValueText: {fileID: 1820198214}
+  agentNameLabel: {fileID: 1595030707}
+  agentNameValue: {fileID: 1539450535}
+  agentHealthLabel: {fileID: 792317707}
+  agentHealthValue: {fileID: 1820198214}
 --- !u!114 &1843578635
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2460,6 +2466,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d6367281fe68b604ea619572f88e5a69, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  agentPresenter: {fileID: 1843578634}
   agentLayer:
     serializedVersion: 2
     m_Bits: 8
