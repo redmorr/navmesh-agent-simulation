@@ -1,5 +1,5 @@
+using System;
 using UnityEngine;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
@@ -12,8 +12,8 @@ public class AgentCollision : MonoBehaviour
     private bool isBeingKnockedBack;
     private Rigidbody rb;
 
-    public UnityAction OnKnockbackStarted;
-    public UnityAction OnKnockbackEnded;
+    public event Action OnKnockbackStarted;
+    public event Action OnKnockbackEnded;
 
     private void Awake()
     {

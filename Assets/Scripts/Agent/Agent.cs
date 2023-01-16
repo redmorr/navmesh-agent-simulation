@@ -1,7 +1,7 @@
+using System;
 using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.Events;
 
 [RequireComponent(typeof(AgentCollision))]
 [RequireComponent(typeof(MeshRenderer))]
@@ -20,9 +20,10 @@ public class Agent : MonoBehaviour, IDamagable
 
     public delegate void OnDisableCallback(Agent Instance);
 
-    public UnityAction<int> OnHealthChanged;
+    public event Action<int> OnHealthChanged;
+
     public OnDisableCallback Disable;
-    public UnityAction<Agent> OnDeath;
+    public event Action<Agent> OnDeath;
 
     public int HealthPoints { get; private set; }
     public string Name { get => gameObject.name; }
