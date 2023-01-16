@@ -26,12 +26,7 @@ public class Arena : Singleton<Arena>
     public bool GetRandomPosition(out Vector3 position)
     {
         bool success = NavMesh.SamplePosition(GetRandomPoint(), out NavMeshHit hit, 2.0f, NavMesh.AllAreas);
-
-        if (success)
-            position = hit.position;
-        else
-            position = Vector3.zero;
-
+        position = success ? hit.position : Vector3.zero;
         return success;
     }
 

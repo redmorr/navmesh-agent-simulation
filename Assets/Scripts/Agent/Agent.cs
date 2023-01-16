@@ -19,10 +19,9 @@ public class Agent : MonoBehaviour, IDamagable
     private int originalLayerID;
 
     public delegate void OnDisableCallback(Agent Instance);
+    public OnDisableCallback Disable;
 
     public event Action<int> OnHealthChanged;
-
-    public OnDisableCallback Disable;
     public event Action<Agent> OnDeath;
 
     public int HealthPoints { get; private set; }
@@ -41,6 +40,9 @@ public class Agent : MonoBehaviour, IDamagable
         agentCollision.OnKnockbackEnded += EnableNavmeshAgent;
     }
 
+    private void DisableNavmeshAgent() => navMeshAgent.enabled = false;
+    private void EnableNavmeshAgent() => navMeshAgent.enabled = true;
+
     private void OnEnable()
     {
         meshRenderer.material.color = originalColor;
@@ -54,9 +56,13 @@ public class Agent : MonoBehaviour, IDamagable
         if (navMeshAgent.enabled && !navMeshAgent.pathPending && navMeshAgent.remainingDistance <= 0.2f)
         {
             if (Arena.Instance.GetRandomPosition(out Vector3 position))
+            {
                 navMeshAgent.SetDestination(position);
+            }
             else
+            {
                 Disable?.Invoke(this);
+            }
         }
     }
 
@@ -76,15 +82,5 @@ public class Agent : MonoBehaviour, IDamagable
         meshRenderer.material.color = colorOnDeath;
         yield return new WaitForSeconds(despawnDuration);
         Disable?.Invoke(this);
-    }
-
-    private void DisableNavmeshAgent()
-    {
-        navMeshAgent.enabled = false;
-    }
-
-    private void EnableNavmeshAgent()
-    {
-        navMeshAgent.enabled = true;
     }
 }

@@ -36,7 +36,22 @@ public class AgentSpawner : MonoBehaviour
     private void OnDisable()
     {
         if (spawnRoutine != null)
+        {
             StopCoroutine(spawnRoutine);
+        }
+    }
+
+    private IEnumerator SpawnRoutine()
+    {
+        while (true)
+        {
+            yield return new WaitForSeconds(Random.Range(randomSpawnRangeTime.x, randomSpawnRangeTime.y));
+
+            if (agentPool.CountActive < agentLimit)
+            {
+                agentPool.Get();
+            }
+        }
     }
 
     private Agent CreateAgent()
@@ -55,38 +70,22 @@ public class AgentSpawner : MonoBehaviour
         navMeshAgent.enabled = true;
 
         if (Arena.Instance.GetRandomPosition(out Vector3 position))
+        {
             instance.transform.position = position + Vector3.up;
+        }
         else
+        {
             instance.transform.position = Vector3.up;
+        }
 
         instance.gameObject.SetActive(true);
     }
 
-    private void OnReleaseAgent(Agent instance)
-    {
-        instance.gameObject.SetActive(false);
-    }
+    private void OnReleaseAgent(Agent instance) => instance.gameObject.SetActive(false);
 
-    private void OnDestroyObjectAgent(Agent instance)
-    {
-        Destroy(instance.gameObject);
-    }
+    private void OnDestroyObjectAgent(Agent instance) => Destroy(instance.gameObject);
 
-    private void ReturnObjectToPool(Agent instance)
-    {
-        agentPool.Release(instance);
-    }
-
-    private IEnumerator SpawnRoutine()
-    {
-        while (true)
-        {
-            yield return new WaitForSeconds(Random.Range(randomSpawnRangeTime.x, randomSpawnRangeTime.y));
-
-            if (agentPool.CountActive < agentLimit)
-                agentPool.Get();
-        }
-    }
+    private void ReturnObjectToPool(Agent instance) => agentPool.Release(instance);
 
     private void OnGUI()
     {

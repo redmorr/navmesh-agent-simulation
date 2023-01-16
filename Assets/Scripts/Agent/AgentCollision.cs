@@ -31,7 +31,8 @@ public class AgentCollision : MonoBehaviour
         if (isBeingKnockedBack)
         {
             knockbackTimer += Time.fixedDeltaTime;
-            rb.MovePosition(transform.position + Vector3.Lerp(knockbackVelocity, Vector3.zero, knockbackTimer / collisionData.KnockbackDuration) * Time.fixedDeltaTime);
+            float knokbackTimeFactor = knockbackTimer / collisionData.KnockbackDuration;
+            rb.MovePosition(transform.position + Vector3.Lerp(knockbackVelocity, Vector3.zero, knokbackTimeFactor) * Time.fixedDeltaTime);
 
             if (knockbackTimer > collisionData.KnockbackDuration)
             {
